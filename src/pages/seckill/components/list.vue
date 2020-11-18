@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h1>我没写完</h1>
       <el-table
       :data="table"
       style="width: 100%;margin-bottom: 20px;"
