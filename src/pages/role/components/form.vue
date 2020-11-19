@@ -2,8 +2,8 @@
   <div>
     <!-- 5.绑定info.isshow到模板 -->
     <el-dialog :title="info.title" :visible.sync="info.isshow" @closed="closed">
-      <el-form ref="formName">
-        <el-form-item label="角色名称" label-width="120px" prop="title">
+      <el-form ref="roleFoem" :rules="rules" :model="user">
+        <el-form-item label="角色名称" label-width="120px" prop="rolename">
           <el-input autocomplete="off" v-model="user.rolename"></el-input>
         </el-form-item>
         <el-form-item label="角色权限" label-width="120px" prop="title">
@@ -45,7 +45,7 @@ import {
   reqRoleinfo,
   reqRoleedit,
 } from "@/utils/http";
-import { successAlert } from "@/utils/alert";
+import { successAlert ,errorAlert } from "@/utils/alert";
 export default {
   props: ["info"],
   methods: {
@@ -80,15 +80,21 @@ export default {
       });
     },
     add() {
-      this.user.menus = JSON.stringify(this.$refs.tree.getCheckedKeys());
-      reqRoleAdd(this.user).then((res) => {
-        if (res.data.code == 200) {
-          successAlert(res.data.list);
-          this.cancel();
-          //数据清空
-          this.empty();
-          //24 刷新list
-          this.$emit("init");
+      this.$refs.roleFoem.validate((valid) => {
+        if (valid) {
+          this.user.menus = JSON.stringify(this.$refs.tree.getCheckedKeys());
+          reqRoleAdd(this.user).then((res) => {
+            if (res.data.code == 200) {
+              successAlert(res.data.list);
+              this.cancel();
+              //数据清空
+              this.empty();
+              //24 刷新list
+              this.$emit("init");
+            }
+          });
+        }else{
+          errorAlert('添加失败')
         }
       });
     },
@@ -108,6 +114,9 @@ export default {
         rolename: "",
         menus: "",
         status: 1,
+      },
+      rules: {
+        rolename: [{ required: true, message: "这个是必填奥" }],
       },
       data: [
         {

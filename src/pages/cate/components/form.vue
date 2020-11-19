@@ -1,8 +1,8 @@
 <template>
   <div>
-    <el-dialog :title="info.title" :visible.sync="info.isshow">
-      <el-form :model="user">
-        <el-form-item label="上级分类" label-width="120px">
+    <el-dialog :title="info.title" :visible.sync="info.isshow" @closed="closed">
+      <el-form :model="user" :rules="rules" ref="cateForm">
+        <el-form-item label="上级分类" label-width="120px" prop="pid">
           <el-select placeholder="请选择" v-model="user.pid">
             <el-option label="顶级菜单" :value="0"></el-option>
             <!-- 23 list遍历 -->
@@ -14,13 +14,14 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="分类名称" label-width="120px">
+        <el-form-item label="分类名称" label-width="120px" prop="catename">
           <el-input autocomplete="off" v-model="user.catename"></el-input>
         </el-form-item>
         <el-form-item
           label="图片"
           label-width="120px"
           v-if="!(user.pid == '0')"
+          prop="img"
         >
           <el-upload
             class="avatar-uploader"
@@ -62,6 +63,11 @@ export default {
   data() {
     return {
       imgUrl: "",
+      rules: {
+        pid: [{ required: true, message: "这个是必填奥" }],
+        catename: [{ required: true, message: "这个也是必选奥" }],
+        img: [{ required: true, message: "这个也得必选" }],
+      },
       user: {
         pid: null,
         catename: "",
@@ -127,17 +133,31 @@ export default {
     },
 
     add() {
-      if (this.user.img == "") {
-        this.user.img = "null";
-      }
-      reqcateAdd(this.user).then((res) => {
-        if (res.data.code == 200) {
-          successAlert("添加成功");
-          this.cancel();
-          this.empty();
-          this.reqList();
+      this.$refs.cateForm.validate((valid) => {
+        if (valid) {
+          if (this.user.img == "") {
+            this.user.img = "null";
+            reqcateAdd(this.user).then((res) => {
+              if (res.data.code == 200) {
+                successAlert("添加成功");
+                this.cancel();
+                this.empty();
+                this.reqList();
+              }
+            });
+          }
+        }else{
+          errorAlert('添加失败')
         }
       });
+    },
+    closed() {
+      // 如果是添加出现，点击了取消，此时，什么都不做
+      // 如果是编辑出现，点击了取消，此时，form置空
+      if (this.info.title === "编辑分类") {
+        this.empty();
+        this.imgUrl = "";
+      }
     },
   },
   mounted() {},

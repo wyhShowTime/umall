@@ -12,7 +12,6 @@ const mutations = {
     //修改list
     changeList(state,arr){
         state.list=arr;
-        console.log(state.list);
     },
     changeTotal(state,num){
         state.total=num;
@@ -26,10 +25,17 @@ const mutations = {
 }
 
 const actions = {
+    //清空
+    clearList(context,obj){
+        if(!obj){
+            context.commit('changeList',[])
+        }
+        
+    },
     //发起请求
     reqList(context,obj){
         let params=obj?obj:{page:context.state.page,size:context.state.size}
-        
+        console.log(obj,'============')
         reqgoodsList(params).then(res=>{
             let list=res.data.list?res.data.list:[]
             

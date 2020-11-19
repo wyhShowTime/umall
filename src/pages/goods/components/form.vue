@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog :title="info.title" :visible.sync="info.isshow" @opened="opened" @closed="closed">
+    <el-dialog :title="info.title" :visible.sync="info.isshow" @opened="opened" @closed="closed"> 
       <el-form :model="user" :rules="rules">
         <!-- 2.绑定数据 -->
         <el-form-item label="一级分类" label-width="120px" prop="first_cateid">
@@ -88,7 +88,7 @@
 import E from "wangeditor";
 import { mapGetters, mapActions } from "vuex";
 import {
-  reqCateList,
+  reqCatelist,
   reqgoodsAdd,
   reqgoodsDetail,
   reqgoodsUpdate,
@@ -174,7 +174,7 @@ export default {
     },
     getSecondList() {
       //获取二级分类list
-      reqcateList({ pid: this.user.first_cateid }).then(res => {
+      reqCatelist({ pid: this.user.first_cateid }).then(res => {
         this.secondCateList = res.data.list;
       });
     },

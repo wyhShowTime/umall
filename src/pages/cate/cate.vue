@@ -26,6 +26,7 @@ export default {
   methods:{
     willAdd(){
       this.info.isshow = true;
+      this.info.title = '添加分类'
     },
     init(id){  
         this.info.isshow = true;
