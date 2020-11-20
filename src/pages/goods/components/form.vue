@@ -197,7 +197,7 @@ export default {
       let obj = this.specsList.find(item => item.id === this.user.specsid);
 
       //就将这条数据的attrs取出来，赋值给attrsList
-      this.attrsList = obj.attrs;
+      this.attrsList =obj? obj.attrs:[];
     },
 
     cancel() {
